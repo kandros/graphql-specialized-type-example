@@ -1,0 +1,13 @@
+{
+  "name": "graphql-specialized-type-example",
+  "version": "0.0.1",
+  "main": "index.js",
+  "author": "jaga santagostino <jagasantagostino@gmail.com> (https://jagasantagostino.com)",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "apollo-server": "^2.9.5",
+    "graphql": "^14.5.8"
+  }
+}
