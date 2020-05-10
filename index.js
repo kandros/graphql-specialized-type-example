@@ -1,96 +1,59 @@
-const { ApolloServer, gql } = require('apollo-server')
+const { ApolloServer, gql } = require("apollo-server");
+
+const users = [
+  {
+    name: "jaga",
+  },
+  {
+    name: "fabio",
+  },
+];
 
 const typeDefs = gql`
-  enum TriggerType {
-    RED
-    GREEN
-  }
-
-  interface Trigger {
-    id: ID!
+  type User {
     name: String!
-    isActive: Boolean!
-    createdAt: String!
-    type: TriggerType!
+    items: [Item!]!
   }
 
-  type RedNested {
-    nestedFieldOnlyForRed: Boolean!
-  }
-
-  type TriggerRed implements Trigger {
-    id: ID!
-    name: String!
-    isActive: Boolean!
-    createdAt: String!
-    type: TriggerType!
-    redField: Boolean!
-    nestedRed: RedNested!
-  }
-
-  type GreenOnly {
-    iLoveGreen: Boolean!
-  }
-
-  type TriggerGreen implements Trigger {
-    id: ID!
-    name: String!
-    isActive: Boolean!
-    createdAt: String!
-    type: TriggerType!
-    greenOnly: GreenOnly!
+  type Item {
+    text: String!
+    """
+    una cosa molto importante che segue la specififa iso-stocazzo-123
+    """
+    xxx: Int!
   }
 
   type Query {
-    triggers: [Trigger!]!
+    users: [User!]!
   }
-`
-
-const triggers = [
-  {
-    id: 1,
-    name: 'my red trigger',
-    isActive: true,
-    createdAt: Date.now(),
-    type: 'RED',
-    redField: true,
-    nestedRed: {
-      nestedFieldOnlyForRed: true,
-    },
-  },
-  {
-    id: 2,
-    name: 'my green trigger',
-    isActive: false,
-    createdAt: new Date(),
-    type: 'GREEN',
-    greenOnly: {
-      iLoveGreen: true,
-    },
-  },
-]
+`;
 
 const resolvers = {
   Query: {
-    triggers: () => {
-      console.log('triggers resolver')
-      return triggers
+    users(parent, args, context, info) {
+      console.log(parent);
+      console.log("inside user");
+      return users;
     },
   },
-  TriggerRed: {
-    __isTypeOf(trigger) {
-      return trigger.type === 'RED'
+  User: {
+    items(parent) {
+      console.log(parent);
+      console.log("inside User.items resolver resolver");
+      return [{ text: "x" }];
     },
   },
-  TriggerGreen: {
-    __isTypeOf(trigger) {
-      return trigger.type === 'GREEN'
+  Item: {
+    xxx(parent) {
+      console.log(parent);
+      console.log("inside Item.xxx resolver resolver");
+      return 42;
     },
   },
-}
+};
 
-const server = new ApolloServer({ typeDefs, resolvers })
+const server = new ApolloServer({ typeDefs, resolvers });
 
 server.listen().then(({ url }) => {
-  console.log(`🚀  Server ready at ${url}`)
-})
+  console.log(`🚀  Server ready at ${url}`);
+});
